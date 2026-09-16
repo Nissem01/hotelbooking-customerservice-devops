@@ -58,7 +58,7 @@ class CustomerServiceTest {
                 request.email(),
                 request.phoneNumber(),
                 request.password()
-                );
+        );
 
         when(customerRepository.save(any(Customer.class)))
                 .thenReturn(savedCustomer);
@@ -90,25 +90,25 @@ class CustomerServiceTest {
 
     @Test
     void getCustomerByIdShouldReturnCustomer() {
-       when(customerRepository.findById(1L))
-               .thenReturn(Optional.of(customer));
+        when(customerRepository.findById(1L))
+                .thenReturn(Optional.of(customer));
 
-       CustomerResponse result = customerService.getCustomerById(1L);
-       assertEquals(customer.getFirstName(),result.firstName());
-       assertEquals(customer.getLastName(),result.lastName());
-       assertEquals(customer.getEmail(),result.email());
-       assertEquals(customer.getPhoneNumber(),result.phoneNumber());
-       assertNotEquals(customer.getFirstName(),result.lastName());
+        CustomerResponse result = customerService.getCustomerById(1L);
+        assertEquals(customer.getFirstName(),result.firstName());
+        assertEquals(customer.getLastName(),result.lastName());
+        assertEquals(customer.getEmail(),result.email());
+        assertEquals(customer.getPhoneNumber(),result.phoneNumber());
+        assertNotEquals(customer.getFirstName(),result.lastName());
 
     }
     @Test
     void IfCustomerDoesNotExistShouldThrowException() {
-      when(customerRepository.findById(1L))
-              .thenReturn(Optional.empty());
+        when(customerRepository.findById(1L))
+                .thenReturn(Optional.empty());
 
 
-      assertThrows(RuntimeException.class,
-              () -> customerService.getCustomerById(1L));
+        assertThrows(RuntimeException.class,
+                () -> customerService.getCustomerById(1L));
     }
 
     @Test
@@ -139,6 +139,16 @@ class CustomerServiceTest {
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
                 () -> customerService.loginCustomer(request));
+
+        assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatusCode());
+    }
+
+    @Test
+    void loginCustomerFailedShouldThrowExceptionWhenEmailIsNotRegistered() {
+        when(customerRepository.findByEmail(loginRequest.email()))
+                .thenReturn(null);
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> customerService.loginCustomer(loginRequest));
 
         assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatusCode());
     }

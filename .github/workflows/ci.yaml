@@ -30,13 +30,12 @@ jobs:
           --health-retries=10
 
     env:
-      MYSQL_PASSWORD: root
       SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/customerservice
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
 
     steps:
-      - name: Checka ut CustomerService
+      - name: Checka ut customerservice
         uses: actions/checkout@v4
 
       - name: Sätt upp java matrix
@@ -46,15 +45,5 @@ jobs:
           distribution: "temurin"
           cache: "maven"
 
-      - name: Starta databasen
-        run: docker compose up -d --wait customer-db
-
-      - name: Vänta på att allt ska startas
-        run: sleep 30
-
-      - name: Bygg och kör tester
-        run: mvn --batch-mode test
-
-      - name: Stäng ner allt
-        if: always()
-        run: docker compose down -v
+      - name: build with maven
+        run: mvn -B package --file pom.xml

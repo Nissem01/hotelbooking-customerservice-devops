@@ -5,7 +5,7 @@ on:
     branches: [master]
 
 jobs:
-  hotelbookingtests:
+  customerservicetests:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -46,4 +46,4 @@ jobs:
           cache: "maven"
 
       - name: build with maven
-        run: mvn -B package --file pom.xml
+        run: mvn --batch-mode test
